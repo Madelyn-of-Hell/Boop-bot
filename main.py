@@ -32,7 +32,8 @@ async def boop(victim: str, attacker):
         db = json.load(f)
     try: db[f'{victim}'] += 1
     except: db[f'{victim}'] = 1
-
+    with open('db.json', 'w') as f:
+        json.dump(db, f)
     await victim.send(f'You have been booped by {attacker}. You have been booped {db[f'{victim}']} times.',
                         file=random.choice(boops))
 
