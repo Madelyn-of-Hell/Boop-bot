@@ -22,7 +22,7 @@ boops = [
         ]
 @client.event
 async def on_message(message):
-    if '!boop' in message.content and message.content[0]:
+    if '!boop' in message.content and message.content[0] == '!':
         await boop(int(message.content[8:-1]),message.author)
 
 async def boop(victim: str, attacker):
