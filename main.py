@@ -13,16 +13,17 @@ client = discord.Client(intents=intents)
 db:dict = {}
 discord.User
 boops = [
-        discord.File('Boops/White1.gif'),
-        discord.File('Boops/White2.gif'),
-        discord.File('Boops/Black1.gif'),
-        discord.File('Boops/Black2.gif'),
-        discord.File('Boops/Orange1.gif'),
-        discord.File('Boops/Orange2.gif')
+        discord.File(fp='Boops/White1.gif'),
+        discord.File(fp='Boops/White2.gif'),
+        discord.File(fp='Boops/Black1.gif'),
+        discord.File(fp='Boops/Black2.gif'),
+        discord.File(fp='Boops/Orange1.gif'),
+        discord.File(fp='Boops/Orange2.gif')
         ]
 @client.event
 async def on_message(message):
     if '!boop' in message.content and message.content[0] == '!':
+        await message.delete()
         await boop(int(message.content[8:-1]),message.author)
 
 async def boop(victim: str, attacker):
@@ -35,9 +36,11 @@ async def boop(victim: str, attacker):
 
     with open('db.json', 'w') as f:
         json.dump(db, f)
-
-    await victim.send(f'You have been booped by {attacker}. You have been booped {db[f"{victim}"]} times.',
-                        file=random.choice(boops))
+    # try:
+    await victim.send(f'You have been booped by {attacker}. You have been booped {db[f"{victim}"]} times.',)
+    # except:
+    #     print(victim)
+    #     print(boopchoice.filename)
 
 
 client.run(TOKEN)
