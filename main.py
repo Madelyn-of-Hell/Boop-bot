@@ -24,23 +24,22 @@ boops = [
 async def on_message(message):
     if '!boop' in message.content and message.content[0] == '!':
         await message.delete()
-        await boop(int(message.content[8:-1]),message.author)
+        await attack(int(message.content[8:-1]),message.author, 0)
+    if '!explode' in message.content and message.content[0] == '!':
+        await message.delete()
+        await attack(int(message.content[11:-1]),message.author, 1)
 
-async def boop(victim: str, attacker):
+async def attack(victim: str, attacker, attackType:int):
     victim = await client.fetch_user(victim)
 
     with open('db.json', 'r') as f:
         db = json.load(f)
-    try: db[f'{victim}'] += 1
-    except: db[f'{victim}'] = 1
+    try: db[f'{victim}'][attackType] += 1
+    except: db[f'{victim}'] = [1-attackType,attackType]
 
     with open('db.json', 'w') as f:
         json.dump(db, f)
-    # try:
-    await victim.send(f'You have been booped by {attacker}. You have been booped {db[f"{victim}"]} times.',)
-    # except:
-    #     print(victim)
-    #     print(boopchoice.filename)
+    await victim.send(f'You have been {"booped" if attackType == 0 else "exploded"} by {attacker}. You have been {"booped" if attackType == 0 else "exploded"} {db[f"{victim}"][attackType]} times.',)
 
 
 client.run(TOKEN)
