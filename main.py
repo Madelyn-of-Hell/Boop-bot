@@ -24,22 +24,25 @@ boops = [
 async def on_message(message):
     if '!boop' in message.content and message.content[0] == '!':
         await message.delete()
-        await attack(int(message.content[8:-1]),message.author, 0)
+        await attack(int(message.content[8:-1]),message.author, [1,0,0,0,'Booped'])
     if '!explode' in message.content and message.content[0] == '!':
         await message.delete()
-        await attack(int(message.content[11:-1]),message.author, 1)
+        await attack(int(message.content[11:-1]),message.author, [0,1,0,1,'Exploded'])
+    if '!implode' in message.content and message.content[0] == '!':
+        await message.delete()
+        await attack(int(message.content[11:-1]),message.author, [0,0,1,2,'Imploded'])
 
-async def attack(victim: str, attacker, attackType:int):
+async def attack(victim: str, attacker, attackType:list[int, str]):
     victim = await client.fetch_user(victim)
 
     with open('db.json', 'r') as f:
         db = json.load(f)
-    try: db[f'{victim}'][attackType] += 1
-    except: db[f'{victim}'] = [1-attackType,attackType]
+    try: db[f'{victim}'][attackType[3]] += 1
+    except: db[f'{victim}'] = [attackType,attackType,attackType]
 
     with open('db.json', 'w') as f:
         json.dump(db, f)
-    await victim.send(f'You have been {"booped" if attackType == 0 else "exploded"} by {attacker}. You have been {"booped" if attackType == 0 else "exploded"} {db[f"{victim}"][attackType]} times.',)
+    await victim.send(f'You have been {attackType[4]} by {attacker}. You have been {attackType[4]} {db[f"{victim}"][attackType[3]]} times.',)
 
 
 client.run(TOKEN)
