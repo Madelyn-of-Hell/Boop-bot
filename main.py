@@ -10,8 +10,14 @@ except: pass
 intents = discord.Intents.default()
 intents.message_content = True
 client = discord.Client(intents=intents)
+tree = discord.app_commands.CommandTree(client)
+
 db:dict = {}
-discord.User
+
+@client.event
+async def on_ready():
+    await tree.sync(guild=discord.Object())
+    print("Ready!")
 boops = [
         discord.File(fp='Boops/White1.gif'),
         discord.File(fp='Boops/White2.gif'),
@@ -20,29 +26,54 @@ boops = [
         discord.File(fp='Boops/Orange1.gif'),
         discord.File(fp='Boops/Orange2.gif')
         ]
-@client.event
-async def on_message(message):
-    if '!boop' in message.content and message.content[0] == '!':
-        await message.delete()
-        await attack(int(message.content[8:-1]),message.author, [1,0,0,0,'Booped'])
-    if '!explode' in message.content and message.content[0] == '!':
-        await message.delete()
-        await attack(int(message.content[11:-1]),message.author, [0,1,0,1,'Exploded'])
-    if '!implode' in message.content and message.content[0] == '!':
-        await message.delete()
-        await attack(int(message.content[11:-1]),message.author, [0,0,1,2,'Imploded'])
 
-async def attack(victim: str, attacker, attackType:list[int, str]):
-    victim = await client.fetch_user(victim)
+async def boop(type, victim, attacker):
+    if type == 1:
+        await attack(victim, attacker, 0)
+    elif type == 2:
+        await attack(victim, attacker, 1)
+    elif type == 3:
+        await attack(victim, attacker, 2)
 
+async def attack(victim, attacker, attackType:int):
+    attacks = ['booped','exploded','imploded']
     with open('db.json', 'r') as f:
         db = json.load(f)
-    try: db[f'{victim}'][attackType[3]] += 1
-    except: db[f'{victim}'] = [attackType,attackType,attackType]
+    try: db[f'{victim}'][attackType] += 1
+    except: 
+        db[f'{victim}'] = [0,0,0]
+        db[f'{victim}'][attackType] += 1
+
+
 
     with open('db.json', 'w') as f:
         json.dump(db, f)
-    await victim.send(f'You have been {attackType[4]} by {attacker}. You have been {attackType[4]} {db[f"{victim}"][attackType[3]]} times.',)
+    await victim.send(f'You have been {attacks[attackType]} by <@{attacker}>. You have been {attacks[attackType]} {db[f"{victim}"][attackType]} times.',)
 
+@tree.command(
+    name="boop",
+    description="Boops a given target",
+    guild=discord.Object()
+)
+async def boop_target(interaction, target: discord.Member):
+    await boop(1, target, interaction.user.id)
+    await interaction.response.send_message(f'Succesfully Booped {target}')
+
+@tree.command(
+    name="explode",
+    description="'Explodes' a given target",
+    guild=discord.Object()
+)
+async def first_command(interaction, target: discord.Member):
+    await boop(2, target, interaction.user.id)
+    await interaction.response.send_message(f'Succesfully Booped {target}')
+@tree.command(
+    name="implode",
+    description="'Implodes' a given target",
+    guild=discord.Object()
+)
+async def first_command(interaction, target: discord.Member):
+    await boop(3, target, interaction.user.id)
+    await interaction.response.send_message(f'Succesfully Booped {target}')
 
 client.run(TOKEN)
