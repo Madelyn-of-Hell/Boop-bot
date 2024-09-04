@@ -52,25 +52,25 @@ async def attack(victim, attacker, attackType:int):
 
 @tree.command(
     name="boop",
-    description="Boops a given target",
+    description="Boops a given target"
 )
 async def boop_target(interaction, target: discord.Member):
     await boop(1, target, interaction.user.id)
-    await interaction.response.send_message(f'Succesfully Booped {target}')
+    await interaction.response.send_message(f'Succesfully Booped {target.name.capitalize()}')
 
 @tree.command(
     name="explode",
-    description="'Explodes' a given target",
+    description="'Explodes' a given target"
 )
 async def first_command(interaction, target: discord.Member):
     await boop(2, target, interaction.user.id)
-    await interaction.response.send_message(f'Succesfully Booped {target}')
+    await interaction.response.send_message(f'Succesfully Exploded {target.name.capitalize()}')
 @tree.command(
     name="implode",
-    description="'Implodes' a given target",
+    description="'Implodes' a given target"
 )
 async def first_command(interaction, target: discord.Member):
     await boop(3, target, interaction.user.id)
-    await interaction.response.send_message(f'Succesfully Booped {target}')
+    await interaction.response.send_message(f'Succesfully Booped {target.name.capitalize()}')
 
 client.run(TOKEN)
