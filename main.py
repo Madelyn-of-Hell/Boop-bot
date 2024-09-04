@@ -16,7 +16,7 @@ db:dict = {}
 
 @client.event
 async def on_ready():
-    await tree.sync(guild=discord.Object())
+    await tree.sync()
     print("Ready!")
 boops = [
         discord.File(fp='Boops/White1.gif'),
