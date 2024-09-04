@@ -53,7 +53,6 @@ async def attack(victim, attacker, attackType:int):
 @tree.command(
     name="boop",
     description="Boops a given target",
-    guild=discord.Object()
 )
 async def boop_target(interaction, target: discord.Member):
     await boop(1, target, interaction.user.id)
@@ -62,7 +61,6 @@ async def boop_target(interaction, target: discord.Member):
 @tree.command(
     name="explode",
     description="'Explodes' a given target",
-    guild=discord.Object()
 )
 async def first_command(interaction, target: discord.Member):
     await boop(2, target, interaction.user.id)
@@ -70,7 +68,6 @@ async def first_command(interaction, target: discord.Member):
 @tree.command(
     name="implode",
     description="'Implodes' a given target",
-    guild=discord.Object()
 )
 async def first_command(interaction, target: discord.Member):
     await boop(3, target, interaction.user.id)
